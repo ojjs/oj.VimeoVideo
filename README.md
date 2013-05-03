@@ -1,4 +1,4 @@
-oj.VimeoMovie
-=============
+oj.VimeoVideo
+============
 
-Vimeo Movie plugin for OJ
+A Vimeo Video plugin for OJ.
