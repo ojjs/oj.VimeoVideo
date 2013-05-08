@@ -8,13 +8,12 @@ a&&b.push(a);e&&b.push(e);g&&b.push(g);return 0<b.length?c.apply(null,b):c.call(
 !a)return!1;var b=this.element,f=""!==b.id?b.id:null,d=!c||!c.constructor||!c.call||!c.apply?c:null,e=c&&c.constructor&&c.call&&c.apply?c:null;e&&l(a,e,f);h(a,d,b);return this},addEvent:function(a,c){if(!this.element)return!1;var b=this.element,d=""!==b.id?b.id:null;l(a,c,d);"ready"!=a?h("addEventListener",a,b):"ready"==a&&i&&c.call(null,d);return this},removeEvent:function(a){if(!this.element)return!1;var c=this.element,b;a:{if((b=""!==c.id?c.id:null)&&d[b]){if(!d[b][a]){b=!1;break a}d[b][a]=null}else{if(!d[a]){b=
 !1;break a}d[a]=null}b=!0}"ready"!=a&&b&&h("removeEventListener",a,c)}};e.fn.init.prototype=e.fn;window.addEventListener?window.addEventListener("message",j,!1):window.attachEvent("onmessage",j);return window.Froogaloop=e}();
 
+// Create url from Vimeo options
 function vimeoUrl(video, options)
 {
   var out = 'http://player.vimeo.com/video/' + video + '?api=1&player_id=' + options.player_id;
-  for(k in options) {
-    var v = options[k];
-    out += '&' + v + '=' + k;
-  }
+  for(k in options)
+    out += '&' + k + '=' + options[k];
   return out;
 }
 
@@ -22,21 +21,21 @@ module.exports = function(oj,settings){
   if (typeof settings !== 'object')
     settings = {}
 
-  // Create VimeoMovie type
-  var VimeoMovie = oj.type('VimeoMovie', {
+  var VimeoVideo = oj.type('VimeoVideo', {
     // The model-key bind to the url of the movie
     base: oj.View,
 
-    // VimeoMovie(url, properties)
+    // VimeoVideo(videoID, properties)
     constructor: function(){
+      var this_ = this;
       var union = oj.argumentsUnion(arguments);
       var options = union.options;
       var args = union.args;
 
       var defaults = {
-        width: '400',       // Default the height
-        height: '200',      // Default the width
-        color: '00adef'     // Color of video controls
+        width: 400,
+        height: 224,
+        color: '00adef'
       };
 
       // Default options if unspecified
@@ -45,44 +44,56 @@ module.exports = function(oj,settings){
           options[k] = defaults[k];
       }
 
-// <iframe id="player1" src="http://player.vimeo.com/video/27855315?api=1&player_id=player1" width="400" height="225" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+      // First argument is video id
+      if(args.length > 0)
+        this.video = args[0];
 
-// <p><button>Play</button> <button>Pause</button></p>
+      // Shift properties
+      var props = [
+        'video',
+        'title',
+        'byline',
+        'portrait',
+        'color',
+        'autoplay',
+        'loop'
+      ];
+      for (var i = 0; i < props.length; i++) {
+        var prop = props[i];
+        if (options[prop] != null)
+          this[prop] = oj.argumentShift(options, prop);
+      }
 
-      // Create el as relatively positioned div
       this.el = oj.toDOM(function(){
-        input = null;
-        if(args.length > 0)
-          input = args[0];
-        oj.iframe(input, {
-          style:{
-            position:'relative',
-          }
+        oj.iframe({
+          src: this_.src,
+          frameborder:0,
+          webkitAllowFullScreen:1,
+          mozallowfullscreen:1,
+          allowFullScreen:1,
         });
       });
 
-      VimeoMovie.base.constructor.apply(this, [options]);
+      VimeoVideo.base.constructor.apply(this, [options]);
 
-      // Bind events using javascript API
-      this.player = Froogaloop(this.el);
+      // // // Bind events using javascript API
+      // this.player = Froogaloop(this.el);
 
-      console.log("this.player: ", this.player);
+      // // // When the player is ready, add listeners for pause, finish, and playProgress
+      // this.player.addEvent('ready', function() {});
 
-      var this_ = this;
 
-      // When the player is ready, add listeners for pause, finish, and playProgress
-      // this.player.addEvent('ready', function() {
-      //   this_.$status.text('ready');
+      //   console.log("ready called");
 
-      //   this_.player.addEvent('pause', this_.onPause.apply(this_,arguments]);
-      //   this_.player.addEvent('finish', function(){this_.onFinish.apply(this_,arguments]);
-      //   this_.player.addEvent('playProgress', function(){this_.onPlayProgress.apply(this_,arguments])};
+      //   this_.player.addEvent('pause', function(){this_.onPause.apply(this_,arguments)});
+      //   this_.player.addEvent('finish', function(){this_.onFinish.apply(this_,arguments)});
+      //   this_.player.addEvent('playProgress', function(){this_.onPlayProgress.apply(this_,arguments)});
       // });
 
-      // Call the API when a button is pressed
-      // $('button').bind('click', function() {
-      //   player.api($(this).text().toLowerCase());
-      // });
+      // if (oj.isClient) {
+      //   console.log("starting: ", starting);
+      //   player.api('starting');
+      // }
     },
     properties: {
       width: {
@@ -100,25 +111,25 @@ module.exports = function(oj,settings){
       },
 
       // The video id
-      video: '45878034',      // Video id (<3 space!)
+      video: 24715531,
 
       // Show title (readwrite)
-      title: true,
+      title: false,
 
       // Show the users byline on the video (readwrite)
-      byline: true,
+      byline: false,
 
       // Show the user's portrait on the video (readwrite)
-      portrait: true,
+      portrait: false,
 
       // Color of controls (readwrite)
       color: {
-        get: function(){return this.color;}
+        get: function(){return this._color;},
         set: function(v){
           // Remove prefix of '#'
           if(v.length > 0 && v[0] == '#')
             v = v.slice(1);
-          this.color = v;
+          this._color = v;
         }
       },
 
@@ -126,26 +137,28 @@ module.exports = function(oj,settings){
       autoplay: false,
 
       // Repeat video when it reaches the end
-      loop: false
+      loop: false,
 
       src: {
-        get: function(){ return vimeoUrl(this.video, video.videoOptions) };
-      }
+        get: function(){
+          return vimeoUrl(this.video, this.videoOptions);
+        }
+      },
 
       // Gather options to set url (readonly)
       videoOptions: {
         get: function(){
           return {
-            title: this.title,
-            byline: this.byline,
-            portrait: this.portrait,
+            title: (this.title ? 1 : 0),
+            byline: (this.byline ? 1 : 0),
+            portrait: (this.portrait ? 1 : 0),
             color: this.color,
-            autoplay: this.autoplay,
-            loop: this.loop,
-            player_id: this.id
+            autoplay: (this.autoplay ? 1 : 0),
+            loop: (this.loop ? 1 : 0),
+            player_id: (this.id ? 1 : 0)
           };
         }
-      },
+      }
     },
 
     methods: {
@@ -158,7 +171,7 @@ module.exports = function(oj,settings){
       },
       rewind: function(){
 
-      }
+      },
 
       onPause: function(id) {
         console.log('paused', id);
@@ -175,6 +188,5 @@ module.exports = function(oj,settings){
     }
   });
 
-  return {VimeoMovie:VimeoMovie};
+  return {VimeoVideo:VimeoVideo};
 };
-
