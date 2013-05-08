@@ -64,7 +64,7 @@ module.exports = function(oj,settings){
           this[prop] = oj.argumentShift(options, prop);
       }
 
-      this.el = oj.toDOM(function(){
+      this.ojml = oj(function(){
         oj.iframe({
           src: this_.src,
           frameborder:0,
