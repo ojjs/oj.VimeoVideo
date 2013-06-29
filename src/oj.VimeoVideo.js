@@ -21,7 +21,7 @@ module.exports = function(oj,settings){
   if (typeof settings !== 'object')
     settings = {}
 
-  var VimeoVideo = oj.type('VimeoVideo', {
+  var VimeoVideo = oj.createType('VimeoVideo', {
     // The model-key bind to the url of the movie
     base: oj.View,
 
