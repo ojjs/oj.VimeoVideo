@@ -1,5 +1,6 @@
-// Create a plugin by defining a function that accepts oj and
-// returns a map of extensions to oj
+// oj.VimeoVideo.js
+
+(function(){
 
 // Froogaloop is the offical javascript api to Vimeo
 // https://github.com/vimeo/player-api/tree/master/javascript
@@ -17,7 +18,7 @@ function vimeoUrl(video, options)
   return out;
 }
 
-module.exports = function(oj,settings){
+var plugin = function(oj,settings){
   if (typeof settings !== 'object')
     settings = {}
 
@@ -28,7 +29,7 @@ module.exports = function(oj,settings){
     // VimeoVideo(videoID, properties)
     constructor: function(){
       var this_ = this;
-      var union = oj.argumentsUnion(arguments);
+      var union = oj.unionArguments(arguments);
       var options = union.options;
       var args = union.args;
 
@@ -51,9 +52,9 @@ module.exports = function(oj,settings){
       // Shift properties
       var props = [
         'video',
-        'title',
-        'byline',
-        'portrait',
+        'showTitle',
+        'showByline',
+        'showPortrait',
         'color',
         'autoplay',
         'loop'
@@ -114,13 +115,13 @@ module.exports = function(oj,settings){
       video: 24715531,
 
       // Show title (readwrite)
-      title: false,
+      showTitle: false,
 
       // Show the users byline on the video (readwrite)
-      byline: false,
+      showByline: false,
 
       // Show the user's portrait on the video (readwrite)
-      portrait: false,
+      showPortrait: false,
 
       // Color of controls (readwrite)
       color: {
@@ -149,9 +150,9 @@ module.exports = function(oj,settings){
       videoOptions: {
         get: function(){
           return {
-            title: (this.title ? 1 : 0),
-            byline: (this.byline ? 1 : 0),
-            portrait: (this.portrait ? 1 : 0),
+            title: (this.showTitle ? 1 : 0),
+            byline: (this.showByline ? 1 : 0),
+            portrait: (this.showPortrait ? 1 : 0),
             color: this.color,
             autoplay: (this.autoplay ? 1 : 0),
             loop: (this.loop ? 1 : 0),
@@ -164,13 +165,11 @@ module.exports = function(oj,settings){
     methods: {
 
       play: function(){
-
       },
       stop: function(){
-
       },
-      rewind: function(){
 
+      rewind: function(){
       },
 
       onPause: function(id) {
@@ -190,3 +189,13 @@ module.exports = function(oj,settings){
 
   return {VimeoVideo:VimeoVideo};
 };
+
+// Export in OJ
+if (typeof oj != 'undefined')
+  oj.use(plugin);
+
+// Export in node
+if (typeof module != 'undefined' && typeof module.exports != 'undefined')
+  module.exports = plugin;
+
+})(this);
