@@ -1,6 +1,6 @@
 {
   "name": "oj-vimeo-video",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "main": "src/oj.VimeoVideo.js",
   "description": "Vimeo Video plugin for OJ",
   "homepage": "http://ojjs.org/docs#VimeoVideo",
