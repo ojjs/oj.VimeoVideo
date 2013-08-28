@@ -90,7 +90,7 @@ var plugin = function(oj,settings){
     },
     properties: {
       width: {
-        get: function(){ return this._width || 400; },
+        get: function(){ return this._width || 300; },
         set: function(v){
           this._width = v;
           if (this.isConstructed)
@@ -99,7 +99,7 @@ var plugin = function(oj,settings){
       },
 
       height: {
-        get: function(){ return this._height || 224; },
+        get: function(){ return this._height || 178; },
         set: function(v){
           this._height = v;
           if (this.isConstructed)
