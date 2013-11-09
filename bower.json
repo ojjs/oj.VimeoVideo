@@ -1,0 +1,25 @@
+{
+  "name": "oj-vimeo-video",
+  "version": "0.0.5",
+  "main": "oj.VimeoVideo.js",
+  "homepage": "http://ojjs.org/plugins.html#VimeoVideo",
+  "authors": [
+    "Evan Moran <evan@evanmoran.com>"
+  ],
+  "description": "Vimeo video plugin for OJ",
+  "keywords": [
+    "oj",
+    "plugin",
+    "vimeo",
+    "video"
+  ],
+  "license": "MIT",
+  "ignore": [
+    ".DS_Store",
+    ".git",
+    ".gitignore",
+    "bower_components",
+    "package.json",
+    "node_modules"
+  ]
+}
