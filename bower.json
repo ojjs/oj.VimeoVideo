@@ -1,6 +1,6 @@
 {
   "name": "oj-vimeo-video",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "main": "oj.VimeoVideo.js",
   "homepage": "http://ojjs.org/plugins.html#VimeoVideo",
   "authors": [
