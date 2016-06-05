@@ -2,17 +2,10 @@
 
 ;(function(root, factory){
 
-  // Export to Node
-  if (typeof module === 'object' && module.exports)
-    module.exports = factory(root)
-
-  // Export to RequireJS
-  else if (typeof define === 'function' && define.amd)
-    define(function(){return factory(root)})
-
-  // Export to OJ
-  else
-    factory(root, root.oj)
+  // Export to Node, Require.JS, or globally
+  if (typeof module === 'object' && module.exports) module.exports = factory(root)
+  else if (typeof define === 'function' && define.amd) define(function(){return factory(root)})
+  else factory(root, root.oj)
 
 }(this, function(root, oj){
 
